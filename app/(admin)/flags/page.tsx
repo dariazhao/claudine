@@ -2,6 +2,7 @@ import { prisma } from "@/lib/db";
 import { getSession } from "@/lib/auth/session";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import BearMascot from "@/components/bear/BearMascot";
 import MarkReviewedButton from "./MarkReviewedButton";
 
 export const dynamic = "force-dynamic";
@@ -23,20 +24,19 @@ export default async function FlagsPage() {
   const reviewed = flags.filter((f) => f.flagReviewed);
 
   return (
-    <div className="space-y-6">
+    <div className="page-enter space-y-6">
       <div>
-        <h1 className="text-2xl font-extrabold text-bear-600">Flags 🚩</h1>
+        <h1 className="text-2xl font-extrabold text-bear-600">Flags</h1>
         <p className="text-bear-400 text-sm mt-0.5">
           {open.length} open · {reviewed.length} reviewed
         </p>
       </div>
 
       {flags.length === 0 && (
-        <div className="text-center py-12 bg-white rounded-2xl border border-bear-100">
-          <div className="text-4xl mb-3">🎉</div>
-          <p className="text-bear-400 font-semibold">
-            No flagged entries — everyone seems to be doing well!
-          </p>
+        <div className="text-center py-14 bg-white rounded-3xl border border-bear-100 shadow-sm">
+          <BearMascot mood="celebrating" size={90} animate className="mx-auto mb-4" />
+          <p className="text-bear-600 font-extrabold text-lg mb-1">All clear!</p>
+          <p className="text-bear-400 text-sm">Everyone seems to be doing well 🍯</p>
         </div>
       )}
 

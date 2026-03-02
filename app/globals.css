@@ -52,3 +52,51 @@ body {
     --foreground: #3d2b1f;
   }
 }
+
+/* ── Bear animations ── */
+@keyframes bear-float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-7px); }
+}
+
+@keyframes bear-wiggle {
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  15%       { transform: rotate(-10deg) scale(1.05); }
+  30%       { transform: rotate(10deg) scale(1.05); }
+  45%       { transform: rotate(-6deg) scale(1.02); }
+  60%       { transform: rotate(6deg) scale(1.02); }
+  75%       { transform: rotate(-2deg) scale(1); }
+}
+
+@keyframes bear-breathe {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.04); }
+}
+
+@keyframes bear-worried-bob {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  30%       { transform: translateY(-3px) rotate(-3deg); }
+  60%       { transform: translateY(-2px) rotate(2deg); }
+}
+
+.bear-float    { animation: bear-float 3s ease-in-out infinite; }
+.bear-wiggle   { animation: bear-wiggle 0.9s ease-in-out infinite; }
+.bear-breathe  { animation: bear-breathe 4s ease-in-out infinite; }
+.bear-worried  { animation: bear-worried-bob 2.5s ease-in-out infinite; }
+
+/* ── Page fade-in ── */
+@keyframes page-fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.page-enter { animation: page-fade-in 0.35s ease-out both; }
+
+/* ── Sparkline gradient ── */
+.sparkline-gradient stop:first-child { stop-opacity: 0.35; }
+.sparkline-gradient stop:last-child  { stop-opacity: 0; }
+
+/* ── Progress bar ── */
+@keyframes progress-fill {
+  from { width: 0%; }
+}

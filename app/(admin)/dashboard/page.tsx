@@ -3,6 +3,7 @@ import { getSession } from "@/lib/auth/session";
 import { redirect } from "next/navigation";
 import MemberCard from "@/components/dashboard/MemberCard";
 import ActivityFeed from "@/components/dashboard/ActivityFeed";
+import BearMascot from "@/components/bear/BearMascot";
 
 export const dynamic = "force-dynamic";
 
@@ -64,10 +65,10 @@ export default async function DashboardPage() {
   ];
 
   return (
-    <div className="space-y-8">
+    <div className="page-enter space-y-8">
       <div>
         <h1 className="text-2xl font-extrabold text-bear-600 mb-1">
-          Dashboard 📊
+          Dashboard
         </h1>
         <p className="text-bear-400 text-sm">
           {new Date().toLocaleDateString("en-US", {
@@ -79,17 +80,16 @@ export default async function DashboardPage() {
       </div>
 
       {/* Stats row */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-3 gap-3">
         {stats.map((s) => (
           <div
             key={s.label}
-            className="bg-white rounded-2xl border border-bear-100 p-4 text-center"
+            className="bg-white rounded-2xl border border-bear-100 p-4 text-center shadow-sm"
           >
-            <div className="text-2xl mb-1">{s.emoji}</div>
             <div className={`text-2xl font-extrabold ${s.color}`}>
               {s.value}
             </div>
-            <div className="text-xs text-bear-200 mt-0.5">{s.label}</div>
+            <div className="text-xs text-bear-300 mt-0.5 font-bold">{s.label}</div>
           </div>
         ))}
       </div>
@@ -100,21 +100,29 @@ export default async function DashboardPage() {
           <h2 className="text-lg font-bold text-bear-600 mb-3">
             Family members
           </h2>
-          <div className="space-y-3">
-            {members.map((m) => (
-              <MemberCard
-                key={m.id}
-                id={m.id}
-                name={m.name}
-                email={m.email}
-                checkedInToday={m.entries.some(
-                  (e) => new Date(e.createdAt) >= today
-                )}
-                recentEntries={m.entries}
-                flagCount={m.entries.filter((e) => e.isAnomaly).length}
-              />
-            ))}
-          </div>
+          {members.length === 0 ? (
+            <div className="text-center py-10 bg-white rounded-2xl border border-bear-100">
+              <BearMascot mood="sleepy" size={70} className="mx-auto mb-3" />
+              <p className="text-bear-400 font-bold text-sm">No members yet</p>
+              <p className="text-bear-200 text-xs mt-1">Invite someone from the Members page</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {members.map((m) => (
+                <MemberCard
+                  key={m.id}
+                  id={m.id}
+                  name={m.name}
+                  email={m.email}
+                  checkedInToday={m.entries.some(
+                    (e) => new Date(e.createdAt) >= today
+                  )}
+                  recentEntries={m.entries}
+                  flagCount={m.entries.filter((e) => e.isAnomaly).length}
+                />
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Today's activity */}

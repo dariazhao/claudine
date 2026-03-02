@@ -11,51 +11,40 @@ export default async function CheckinPage() {
   const session = await getSession();
   if (!session.userId) redirect("/login");
 
-  // Check if already checked in today
   const startOfDay = new Date();
   startOfDay.setUTCHours(0, 0, 0, 0);
   const existing = await prisma.entry.findFirst({
-    where: {
-      userId: session.userId,
-      createdAt: { gte: startOfDay },
-    },
+    where: { userId: session.userId, createdAt: { gte: startOfDay } },
   });
 
-  if (existing) {
-    redirect("/checkin/done?already=true");
-  }
+  if (existing) redirect("/checkin/done?already=true");
 
   const prompt = await getTodaysPrompt();
 
   if (!prompt) {
     return (
-      <div className="text-center py-12">
-        <div className="text-4xl mb-3">😴</div>
-        <p className="text-bear-400 font-semibold">
-          No prompts available yet. Check back soon!
-        </p>
+      <div className="text-center py-16">
+        <BearMascot mood="sleepy" size={90} className="mx-auto mb-4" />
+        <p className="text-bear-600 font-bold text-lg mb-1">No prompts yet!</p>
+        <p className="text-bear-400 text-sm">Check back soon.</p>
       </div>
     );
   }
 
   return (
-    <div>
-      {/* Bear greeting */}
-      <div className="flex items-center gap-4 mb-6">
-        <BearMascot mood="happy" size={72} />
+    <div className="page-enter">
+      {/* Bear greeting — centered, prominent */}
+      <div className="flex flex-col items-center text-center mb-8">
+        <BearMascot mood="happy" size={100} animate className="mb-3" />
         <BearGreeting name={session.name} />
+        <p className="text-bear-200 text-sm mt-1">Here's today's question for you 🍯</p>
       </div>
 
-      {/* Today's prompt */}
+      {/* Prompt speech bubble */}
       <DailyPrompt body={prompt.body} category={prompt.category} />
 
-      {/* Small bear below the speech bubble */}
-      <div className="flex justify-start mb-5 ml-2">
-        <BearMascot mood="happy" size={48} />
-      </div>
-
-      {/* Journal form */}
-      <div className="bg-white rounded-2xl border border-bear-100 shadow-sm p-6">
+      {/* Journal form card */}
+      <div className="bg-white rounded-3xl border border-bear-100 shadow-sm p-6 mt-8">
         <JournalForm promptId={prompt.id} />
       </div>
     </div>

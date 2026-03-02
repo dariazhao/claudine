@@ -1,151 +1,146 @@
-type BearMood = "happy" | "worried" | "sleepy" | "celebrating";
+export type BearMood = "happy" | "worried" | "sleepy" | "celebrating";
 
 interface BearMascotProps {
   mood?: BearMood;
   size?: number;
   className?: string;
+  animate?: boolean;
+}
+
+// Rosy cheek circles — always present, opacity varies by mood
+function Cheeks({ opacity = 0.45 }: { opacity?: number }) {
+  return (
+    <>
+      <circle cx="28" cy="57" r="8" fill="#f4a0b0" opacity={opacity} />
+      <circle cx="72" cy="57" r="8" fill="#f4a0b0" opacity={opacity} />
+    </>
+  );
+}
+
+// Kawaii dot eyes with shine
+function DotEyes({ sad = false }: { sad?: boolean }) {
+  return (
+    <>
+      <circle cx="38" cy="47" r={sad ? 4 : 5} fill="#1a0a00" />
+      <circle cx="62" cy="47" r={sad ? 4 : 5} fill="#1a0a00" />
+      <circle cx="40.5" cy="44.5" r="2" fill="white" />
+      <circle cx="64.5" cy="44.5" r="2" fill="white" />
+    </>
+  );
+}
+
+// Bear nose
+function Nose() {
+  return <ellipse cx="50" cy="56" rx="4.5" ry="3.5" fill="#b07848" />;
 }
 
 const MOOD_FACES: Record<BearMood, React.ReactNode> = {
   happy: (
     <>
-      {/* eyes */}
-      <ellipse cx="36" cy="48" rx="4" ry="4.5" fill="#3d2b1f" />
-      <ellipse cx="64" cy="48" rx="4" ry="4.5" fill="#3d2b1f" />
-      {/* shine */}
-      <circle cx="38" cy="46" r="1.5" fill="white" />
-      <circle cx="66" cy="46" r="1.5" fill="white" />
-      {/* smile */}
+      <DotEyes />
+      <Cheeks opacity={0.45} />
+      <Nose />
+      {/* Wide open smile */}
       <path
-        d="M 38 60 Q 50 72 62 60"
-        stroke="#3d2b1f"
-        strokeWidth="2.5"
-        fill="none"
-        strokeLinecap="round"
+        d="M 37 63 Q 50 76 63 63"
+        stroke="#1a0a00" strokeWidth="2.5" fill="none" strokeLinecap="round"
       />
-      {/* nose */}
-      <ellipse cx="50" cy="56" rx="5" ry="3.5" fill="#c8956c" />
     </>
   ),
-  worried: (
-    <>
-      <ellipse cx="36" cy="48" rx="4" ry="4.5" fill="#3d2b1f" />
-      <ellipse cx="64" cy="48" rx="4" ry="4.5" fill="#3d2b1f" />
-      <circle cx="38" cy="46" r="1.5" fill="white" />
-      <circle cx="66" cy="46" r="1.5" fill="white" />
-      {/* worried brows */}
-      <path
-        d="M 30 41 Q 36 38 42 41"
-        stroke="#3d2b1f"
-        strokeWidth="2"
-        fill="none"
-        strokeLinecap="round"
-      />
-      <path
-        d="M 58 41 Q 64 38 70 41"
-        stroke="#3d2b1f"
-        strokeWidth="2"
-        fill="none"
-        strokeLinecap="round"
-      />
-      {/* sad mouth */}
-      <path
-        d="M 40 66 Q 50 60 60 66"
-        stroke="#3d2b1f"
-        strokeWidth="2.5"
-        fill="none"
-        strokeLinecap="round"
-      />
-      <ellipse cx="50" cy="56" rx="5" ry="3.5" fill="#c8956c" />
-    </>
-  ),
-  sleepy: (
-    <>
-      {/* half-closed eyes */}
-      <path
-        d="M 32 48 Q 36 52 40 48"
-        stroke="#3d2b1f"
-        strokeWidth="2.5"
-        fill="none"
-        strokeLinecap="round"
-      />
-      <path
-        d="M 60 48 Q 64 52 68 48"
-        stroke="#3d2b1f"
-        strokeWidth="2.5"
-        fill="none"
-        strokeLinecap="round"
-      />
-      {/* zzz */}
-      <text x="70" y="30" fontSize="10" fill="#c8956c" fontWeight="bold">
-        z
-      </text>
-      <text x="76" y="22" fontSize="8" fill="#c8956c" fontWeight="bold">
-        z
-      </text>
-      {/* small smile */}
-      <path
-        d="M 43 62 Q 50 68 57 62"
-        stroke="#3d2b1f"
-        strokeWidth="2.5"
-        fill="none"
-        strokeLinecap="round"
-      />
-      <ellipse cx="50" cy="56" rx="5" ry="3.5" fill="#c8956c" />
-    </>
-  ),
+
   celebrating: (
     <>
-      <ellipse cx="36" cy="48" rx="4.5" ry="5" fill="#3d2b1f" />
-      <ellipse cx="64" cy="48" rx="4.5" ry="5" fill="#3d2b1f" />
-      <circle cx="38" cy="46" r="1.5" fill="white" />
-      <circle cx="66" cy="46" r="1.5" fill="white" />
-      {/* big grin */}
+      {/* ^ arch eyes — dumpling-style kawaii joy */}
+      <path d="M 31 49 Q 38 40 45 49" stroke="#1a0a00" strokeWidth="3.5" fill="none" strokeLinecap="round" />
+      <path d="M 55 49 Q 62 40 69 49" stroke="#1a0a00" strokeWidth="3.5" fill="none" strokeLinecap="round" />
+      <Cheeks opacity={0.65} />
+      <Nose />
+      {/* Big grin */}
       <path
-        d="M 35 60 Q 50 76 65 60"
-        stroke="#3d2b1f"
-        strokeWidth="2.5"
-        fill="none"
-        strokeLinecap="round"
+        d="M 35 62 Q 50 78 65 62"
+        stroke="#1a0a00" strokeWidth="2.5" fill="none" strokeLinecap="round"
       />
-      <ellipse cx="50" cy="56" rx="5" ry="3.5" fill="#c8956c" />
-      {/* confetti */}
-      <circle cx="18" cy="25" r="3" fill="#fbbf24" />
-      <circle cx="82" cy="20" r="2.5" fill="#f4956b" />
-      <circle cx="12" cy="60" r="2" fill="#c8956c" />
-      <circle cx="88" cy="55" r="3" fill="#fbbf24" />
-      <rect x="20" y="70" width="5" height="5" rx="1" fill="#f59e0b" transform="rotate(20 22 72)" />
-      <rect x="75" y="65" width="4" height="4" rx="1" fill="#fde8d8" transform="rotate(-15 77 67)" />
+      {/* Little star sparkles scattered around */}
+      <text x="8"  y="22" fontSize="11" fill="#fbbf24" opacity="0.9">✦</text>
+      <text x="78" y="18" fontSize="9"  fill="#f4956b" opacity="0.9">✦</text>
+      <text x="4"  y="60" fontSize="7"  fill="#c8956c" opacity="0.8">✦</text>
+      <text x="83" y="55" fontSize="8"  fill="#fbbf24" opacity="0.8">✦</text>
+      <text x="42" y="10" fontSize="7"  fill="#f4a0b0" opacity="0.9">✦</text>
     </>
   ),
+
+  sleepy: (
+    <>
+      {/* Half-moon droopy eyes — filled arcs */}
+      <path d="M 32 46 Q 38 53 44 46" stroke="#1a0a00" strokeWidth="3" fill="#1a0a00" strokeLinecap="round" />
+      <path d="M 56 46 Q 62 53 68 46" stroke="#1a0a00" strokeWidth="3" fill="#1a0a00" strokeLinecap="round" />
+      <Cheeks opacity={0.28} />
+      <Nose />
+      {/* Soft small mouth */}
+      <path
+        d="M 44 64 Q 50 69 56 64"
+        stroke="#1a0a00" strokeWidth="2" fill="none" strokeLinecap="round"
+      />
+      {/* Z Z */}
+      <text x="68" y="30" fontSize="10" fill="#c8956c" fontWeight="bold" opacity="0.75">z</text>
+      <text x="75" y="20" fontSize="8"  fill="#c8956c" fontWeight="bold" opacity="0.5">z</text>
+    </>
+  ),
+
+  worried: (
+    <>
+      <DotEyes sad />
+      {/* Furrowed brows — angled inward */}
+      <path d="M 30 37 Q 38 33 44 38" stroke="#1a0a00" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+      <path d="M 56 38 Q 62 33 70 37" stroke="#1a0a00" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+      <Cheeks opacity={0.2} />
+      <Nose />
+      {/* Wobbly worried mouth */}
+      <path
+        d="M 38 66 Q 44 61 50 63 Q 56 65 62 60"
+        stroke="#1a0a00" strokeWidth="2.5" fill="none" strokeLinecap="round"
+      />
+    </>
+  ),
+};
+
+const MOOD_ANIMATION: Record<BearMood, string> = {
+  happy:       "bear-float",
+  celebrating: "bear-wiggle",
+  sleepy:      "bear-breathe",
+  worried:     "bear-worried",
 };
 
 export default function BearMascot({
   mood = "happy",
   size = 100,
   className = "",
+  animate = true,
 }: BearMascotProps) {
+  const animClass = animate ? MOOD_ANIMATION[mood] : "";
+
   return (
     <svg
       width={size}
       height={size}
       viewBox="0 0 100 100"
-      className={className}
-      aria-label={`Bear mascot feeling ${mood}`}
+      className={`${animClass} ${className}`}
+      aria-label={`Bear feeling ${mood}`}
+      style={{ overflow: "visible" }}
     >
-      {/* Ears */}
-      <circle cx="22" cy="22" r="14" fill="#c8956c" />
-      <circle cx="22" cy="22" r="9" fill="#f5d5b0" />
-      <circle cx="78" cy="22" r="14" fill="#c8956c" />
-      <circle cx="78" cy="22" r="9" fill="#f5d5b0" />
+      {/* ── Ears ── */}
+      <circle cx="21" cy="23" r="15" fill="#c8956c" />
+      <circle cx="21" cy="23" r="10" fill="#e8c4a0" />
+      <circle cx="79" cy="23" r="15" fill="#c8956c" />
+      <circle cx="79" cy="23" r="10" fill="#e8c4a0" />
 
-      {/* Head */}
-      <circle cx="50" cy="50" r="38" fill="#c8956c" />
+      {/* ── Head ── round, plump, dumpling-inspired */}
+      <circle cx="50" cy="50" r="40" fill="#c8956c" />
 
-      {/* Face / muzzle */}
-      <ellipse cx="50" cy="62" rx="18" ry="13" fill="#f5d5b0" />
+      {/* ── Muzzle ── soft rounded patch */}
+      <ellipse cx="50" cy="62" rx="20" ry="15" fill="#e8c4a0" />
 
-      {/* Face features by mood */}
+      {/* ── Face details by mood ── */}
       {MOOD_FACES[mood]}
     </svg>
   );
