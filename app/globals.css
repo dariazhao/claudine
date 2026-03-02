@@ -1,26 +1,54 @@
 @import "tailwindcss";
 
+@theme {
+  /* Bear palette */
+  --color-honey-50: #fffbeb;
+  --color-honey-400: #fbbf24;
+  --color-honey-500: #f59e0b;
+  --color-honey-600: #d97706;
+
+  --color-bear-50: #fdf8f0;
+  --color-bear-100: #faebd7;
+  --color-bear-200: #f5d5b0;
+  --color-bear-400: #c8956c;
+  --color-bear-600: #8b5e3c;
+
+  --color-peach-100: #fde8d8;
+  --color-peach-200: #fbd0b0;
+  --color-peach-400: #f4956b;
+
+  --color-cream-50: #fdfcf9;
+  --color-cream-100: #faf7f0;
+  --color-cream-200: #f5ede0;
+
+  /* Typography */
+  --font-sans: var(--font-nunito, "Nunito", "Arial Rounded MT Bold", sans-serif);
+
+  /* Rounded defaults */
+  --radius-DEFAULT: 0.75rem;
+  --radius-xl: 2rem;
+
+  /* No dark mode */
+  --color-background: #fdfcf9;
+  --color-foreground: #3d2b1f;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: #fdfcf9;
+  --foreground: #3d2b1f;
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Prevent dark mode system override */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #fdfcf9;
+    --foreground: #3d2b1f;
+  }
 }

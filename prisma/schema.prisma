@@ -1,0 +1,96 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id             String       @id @default(cuid())
+  email          String       @unique
+  name           String
+  username       String?      @unique  // e.g. "mamabear" — for password login
+  passwordHash   String?               // bcrypt hash, set alongside username
+  role           Role         @default(MEMBER)
+  avatarUrl      String?
+  notifyEmail    Boolean      @default(true)
+  notifySms      Boolean      @default(false)
+  notifyWhatsapp Boolean      @default(false)
+  notifyAppOnly  Boolean      @default(false)
+  phoneNumber    String?
+  reminderTime   String       @default("09:00")
+  timezone       String       @default("America/New_York")
+  entries        Entry[]
+  magicTokens    MagicToken[]
+  baseline       Baseline?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+enum Role {
+  ADMIN
+  MEMBER
+}
+
+model MagicToken {
+  id        String    @id @default(cuid())
+  token     String    @unique
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+}
+
+model Entry {
+  id             String          @id @default(cuid())
+  userId         String
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  promptId       String
+  prompt         Prompt          @relation(fields: [promptId], references: [id])
+  body           String
+  moodEmoji      String?
+  sentimentScore Float?
+  sentimentLabel SentimentLabel?
+  sentimentRaw   Json?
+  isAnomaly      Boolean         @default(false)
+  anomalyReason  String?
+  flaggedAt      DateTime?
+  flagReviewed   Boolean         @default(false)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  @@index([userId])
+  @@index([isAnomaly])
+  @@index([createdAt])
+}
+
+enum SentimentLabel {
+  JOYFUL
+  POSITIVE
+  NEUTRAL
+  CONCERNED
+  DISTRESSED
+}
+
+model Prompt {
+  id        String   @id @default(cuid())
+  body      String
+  category  String?
+  active    Boolean  @default(true)
+  sortOrder Int      @default(0)
+  entries   Entry[]
+  createdAt DateTime @default(now())
+}
+
+model Baseline {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  windowDays  Int      @default(14)
+  mean        Float    @default(0.0)
+  stdDev      Float    @default(0.5)
+  sampleCount Int      @default(0)
+  updatedAt   DateTime @updatedAt
+}
