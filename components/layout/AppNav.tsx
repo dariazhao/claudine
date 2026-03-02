@@ -59,6 +59,16 @@ function IconFlags({ active }: { active: boolean }) {
   );
 }
 
+function IconProgress({ active }: { active: boolean }) {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3"  y="12" width="4" height="9" rx="1" fill={active ? "currentColor" : "none"} />
+      <rect x="10" y="7"  width="4" height="14" rx="1" fill={active ? "currentColor" : "none"} />
+      <rect x="17" y="3"  width="4" height="18" rx="1" fill={active ? "currentColor" : "none"} />
+    </svg>
+  );
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 
 interface AppNavProps {
@@ -72,8 +82,9 @@ export default function AppNav({ userName, role, openFlagCount = 0 }: AppNavProp
   const router = useRouter();
 
   const memberTabs = [
-    { href: "/checkin", label: "Check-in", Icon: IconCheckin },
-    { href: "/history", label: "Journal", Icon: IconHistory },
+    { href: "/checkin",  label: "Check-in", Icon: IconCheckin  },
+    { href: "/history",  label: "Journal",  Icon: IconHistory  },
+    { href: "/progress", label: "Progress", Icon: IconProgress },
   ];
 
   const adminTabs = [
