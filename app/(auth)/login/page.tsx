@@ -5,6 +5,31 @@ import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Suspense } from "react";
 
+function DemoBearButton() {
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  async function handleClick() {
+    setLoading(true);
+    const res = await fetch("/api/auth/demo-login", { method: "POST" });
+    if (res.ok) {
+      router.push("/checkin");
+    } else {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <button
+      onClick={handleClick}
+      disabled={loading}
+      className="w-full mt-3 py-3 px-6 bg-bear-100 hover:bg-bear-200 text-bear-600 font-bold rounded-xl transition-colors disabled:opacity-60 text-base border-2 border-dashed border-bear-200"
+    >
+      {loading ? "Loading..." : "🐻 Try as DemoBear"}
+    </button>
+  );
+}
+
 function DevLoginButton() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -205,6 +230,8 @@ function LoginForm() {
           </form>
         )}
       </div>
+
+      <DemoBearButton />
 
       {process.env.NODE_ENV === "development" && <DevLoginButton />}
 

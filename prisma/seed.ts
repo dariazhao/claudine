@@ -62,11 +62,6 @@ async function main() {
     });
   }
 
-  // Delete all and re-create to avoid unique constraint issues on body
-  await prisma.prompt.deleteMany({});
-  for (const prompt of prompts) {
-    await prisma.prompt.create({ data: prompt });
-  }
 
   const adminEmail = process.env.ADMIN_EMAIL;
   if (adminEmail) {
@@ -81,6 +76,18 @@ async function main() {
       },
     });
   }
+
+  // Demo account
+  console.log("Creating demobear account...");
+  await prisma.user.upsert({
+    where: { username: "demobear" },
+    update: {},
+    create: {
+      email: "demobear@claudine.app",
+      name: "Demo Bear",
+      username: "demobear",
+    },
+  });
 
   console.log("Seed complete.");
 }
