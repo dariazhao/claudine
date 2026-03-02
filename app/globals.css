@@ -40,6 +40,25 @@
   /* No dark mode */
   --color-background: #fdfcf9;
   --color-foreground: #3d2b1f;
+
+  /* Shadcn-compatible semantic tokens (mapped to bear palette) */
+  --color-primary: #f59e0b;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #faebd7;
+  --color-secondary-foreground: #8b5e3c;
+  --color-muted: #faf7f0;
+  --color-muted-foreground: #c8956c;
+  --color-accent: #fde8d8;
+  --color-accent-foreground: #8b5e3c;
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #ffffff;
+  --color-border: #faebd7;
+  --color-input: #faebd7;
+  --color-ring: #f59e0b;
+  --color-card: #ffffff;
+  --color-card-foreground: #3d2b1f;
+  --color-popover: #ffffff;
+  --color-popover-foreground: #3d2b1f;
 }
 
 :root {
@@ -109,6 +128,39 @@ body {
 @keyframes progress-fill {
   from { width: 0%; }
 }
+
+/* ── Bear parade marquee ── */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.marquee-track {
+  animation: marquee 40s linear infinite;
+  will-change: transform;
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* ── Staggered fade-in for cards ── */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.fade-up-1 { animation: fade-up 0.5s ease-out 0.1s both; }
+.fade-up-2 { animation: fade-up 0.5s ease-out 0.2s both; }
+.fade-up-3 { animation: fade-up 0.5s ease-out 0.3s both; }
+
+/* ── Pulse glow ── */
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.15; transform: scale(0.95); }
+  50%       { opacity: 0.30; transform: scale(1.05); }
+}
+
+.pulse-glow { animation: pulse-glow 3s ease-in-out infinite; }
 
 /* ── Display font utility ── */
 @layer utilities {

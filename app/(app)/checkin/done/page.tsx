@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { getSession } from "@/lib/auth/session";
 import BearMascot from "@/components/bear/BearMascot";
+import EmotionBear from "@/components/bear/EmotionBear";
 import AlreadyCheckedInBanner from "./AlreadyCheckedInBanner";
 
 export default async function DonePage() {
@@ -10,9 +11,9 @@ export default async function DonePage() {
 
   return (
     <div className="page-enter flex flex-col items-center text-center py-10">
-      {/* Glow + bear */}
+      {/* Glow + bears */}
       <div className="relative mb-6">
-        <div className="absolute inset-0 bg-honey-400 opacity-20 blur-3xl rounded-full scale-75" />
+        <div className="pulse-glow absolute inset-0 bg-honey-400 blur-3xl rounded-full" />
         <BearMascot mood="celebrating" size={130} animate className="relative" />
       </div>
 
@@ -36,6 +37,15 @@ export default async function DonePage() {
         <p className="text-honey-600 text-sm mt-1">
           Come back tomorrow for a new prompt!
         </p>
+      </div>
+
+      {/* Mini emotion bear row */}
+      <div className="mt-6 flex items-center gap-3">
+        <EmotionBear emotion="ecstatic" size={40} />
+        <EmotionBear emotion="joyful" size={32} />
+        <EmotionBear emotion="excited" size={28} />
+        <EmotionBear emotion="content" size={32} />
+        <EmotionBear emotion="hopeful" size={40} />
       </div>
 
       <div className="mt-8 flex flex-col sm:flex-row items-center gap-3">

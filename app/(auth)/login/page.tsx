@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Suspense } from "react";
+import EmotionBear from "@/components/bear/EmotionBear";
 
 function DemoBearButton() {
   const [loading, setLoading] = useState(false);
@@ -114,8 +115,10 @@ function LoginForm() {
     return (
       <div className="w-full max-w-sm text-center">
         <div className="bg-white rounded-3xl border border-bear-100 shadow-warm p-8 mb-4">
-          <div className="w-16 h-16 bg-honey-50 border border-honey-200 rounded-full flex items-center justify-center text-3xl mx-auto mb-5">
-            📬
+          <div className="flex items-center justify-center gap-2 mb-5">
+            <EmotionBear emotion="excited" size={40} />
+            <EmotionBear emotion="hopeful" size={56} />
+            <EmotionBear emotion="peaceful" size={40} />
           </div>
           <h2 className="font-display italic font-bold text-2xl text-bear-600 mb-2">Check your inbox!</h2>
           <p className="text-bear-400 text-sm leading-relaxed">
@@ -140,8 +143,12 @@ function LoginForm() {
     <div className="w-full max-w-sm">
       {/* Brand header */}
       <div className="text-center mb-7">
-        <div className="inline-flex items-center justify-center w-14 h-14 bg-honey-50 border border-honey-200 rounded-2xl text-3xl mb-4 shadow-sm">
-          🐻
+        <div className="flex items-end justify-center gap-1.5 mb-4">
+          <EmotionBear emotion="worried" size={32} />
+          <EmotionBear emotion="calm" size={40} />
+          <EmotionBear emotion="hopeful" size={52} />
+          <EmotionBear emotion="joyful" size={40} />
+          <EmotionBear emotion="tired" size={32} />
         </div>
         <h1 className="font-display italic font-bold text-3xl text-bear-600 mb-1">Claudine</h1>
         <p className="text-bear-400 text-sm font-semibold">Your daily check-in companion</p>
