@@ -38,13 +38,19 @@ export default async function DonePage() {
         </p>
       </div>
 
-      <div className="mt-8">
+      <div className="mt-8 flex flex-col sm:flex-row items-center gap-3">
         <Link
           href="/history"
           className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-bear-100 text-bear-600 font-extrabold hover:bg-bear-200 transition-colors text-sm"
         >
           <span>📖</span>
           <span>View my journal</span>
+        </Link>
+        <Link
+          href="/checkin"
+          className="text-bear-300 hover:text-bear-500 font-semibold text-sm transition-colors"
+        >
+          Back to home
         </Link>
       </div>
     </div>

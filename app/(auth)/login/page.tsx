@@ -112,14 +112,24 @@ function LoginForm() {
 
   if (status === "sent") {
     return (
-      <div className="text-center">
-        <div className="text-6xl mb-4">📬</div>
-        <h2 className="text-2xl font-bold text-bear-600 mb-2">Check your inbox!</h2>
-        <p className="text-bear-400 text-lg">
-          We sent a sign-in link to <strong className="text-bear-600">{email}</strong>.<br />
-          It expires in 15 minutes.
-        </p>
-        <button onClick={() => setStatus("idle")} className="mt-6 text-honey-600 underline text-sm font-semibold">
+      <div className="w-full max-w-sm text-center">
+        <div className="bg-white rounded-3xl border border-bear-100 shadow-warm p-8 mb-4">
+          <div className="w-16 h-16 bg-honey-50 border border-honey-200 rounded-full flex items-center justify-center text-3xl mx-auto mb-5">
+            📬
+          </div>
+          <h2 className="font-display italic font-bold text-2xl text-bear-600 mb-2">Check your inbox!</h2>
+          <p className="text-bear-400 text-sm leading-relaxed">
+            We sent a sign-in link to
+          </p>
+          <p className="font-bold text-bear-600 text-sm mt-0.5 mb-3 break-all">{email}</p>
+          <div className="bg-cream-100 rounded-2xl px-4 py-3">
+            <p className="text-bear-400 text-xs">Link expires in <strong className="text-bear-600">15 minutes</strong>. Check your spam folder if you don&apos;t see it.</p>
+          </div>
+        </div>
+        <button
+          onClick={() => setStatus("idle")}
+          className="text-honey-600 hover:text-honey-700 text-sm font-bold underline underline-offset-2"
+        >
           Try a different email
         </button>
       </div>
@@ -128,43 +138,47 @@ function LoginForm() {
 
   return (
     <div className="w-full max-w-sm">
-      <div className="text-center mb-8">
-        <div className="text-6xl mb-3">🐻</div>
-        <h1 className="text-3xl font-extrabold text-bear-600 mb-1">Claudine</h1>
-        <p className="text-bear-400 font-semibold">Your daily check-in companion</p>
+      {/* Brand header */}
+      <div className="text-center mb-7">
+        <div className="inline-flex items-center justify-center w-14 h-14 bg-honey-50 border border-honey-200 rounded-2xl text-3xl mb-4 shadow-sm">
+          🐻
+        </div>
+        <h1 className="font-display italic font-bold text-3xl text-bear-600 mb-1">Claudine</h1>
+        <p className="text-bear-400 text-sm font-semibold">Your daily check-in companion</p>
       </div>
 
       {error && (
-        <div className="mb-4 p-3 bg-peach-100 border border-peach-200 rounded-xl text-bear-600 text-sm">
-          {errorMessages[error] ?? "Something went wrong. Please try again."}
+        <div className="mb-4 flex items-start gap-2.5 p-3.5 bg-peach-100 border border-peach-200 rounded-2xl text-bear-600 text-sm">
+          <span className="text-base flex-shrink-0">⚠️</span>
+          <span>{errorMessages[error] ?? "Something went wrong. Please try again."}</span>
         </div>
       )}
 
-      <div className="bg-white rounded-2xl shadow-sm border border-bear-100 p-6">
+      <div className="bg-white rounded-3xl shadow-warm border border-bear-100 p-6">
         {/* Tab switcher */}
-        <div className="flex rounded-xl bg-cream-100 p-1 mb-5">
+        <div className="flex rounded-2xl bg-cream-100 p-1 mb-5">
           <button
             onClick={() => { setTab("password"); setStatus("idle"); setErrorMsg(""); }}
-            className={`flex-1 py-2 text-sm font-bold rounded-lg transition-colors ${
-              tab === "password" ? "bg-white text-bear-600 shadow-sm" : "text-bear-200"
+            className={`flex-1 py-2.5 text-sm font-bold rounded-xl transition-all ${
+              tab === "password" ? "bg-white text-bear-600 shadow-sm" : "text-bear-300 hover:text-bear-500"
             }`}
           >
-            🐾 Username
+            Username
           </button>
           <button
             onClick={() => { setTab("magic"); setStatus("idle"); setErrorMsg(""); }}
-            className={`flex-1 py-2 text-sm font-bold rounded-lg transition-colors ${
-              tab === "magic" ? "bg-white text-bear-600 shadow-sm" : "text-bear-200"
+            className={`flex-1 py-2.5 text-sm font-bold rounded-xl transition-all ${
+              tab === "magic" ? "bg-white text-bear-600 shadow-sm" : "text-bear-300 hover:text-bear-500"
             }`}
           >
-            🍯 Magic link
+            Magic link
           </button>
         </div>
 
         {tab === "password" ? (
           <form onSubmit={handlePasswordLogin} className="space-y-4">
             <div>
-              <label htmlFor="username" className="block text-sm font-semibold text-bear-600 mb-1">
+              <label htmlFor="username" className="block text-xs font-bold uppercase tracking-[0.1em] text-bear-400 mb-1.5">
                 Username
               </label>
               <input
@@ -176,11 +190,11 @@ function LoginForm() {
                 placeholder="e.g. mamabear"
                 autoCapitalize="none"
                 autoCorrect="off"
-                className="w-full px-4 py-3 rounded-xl border border-bear-200 bg-cream-50 text-bear-600 placeholder-bear-200 focus:outline-none focus:ring-2 focus:ring-honey-400 text-base"
+                className="w-full px-4 py-3 rounded-xl border border-bear-200 bg-cream-50 text-bear-600 placeholder-bear-300 focus:outline-none focus:ring-2 focus:ring-honey-400 focus:border-transparent text-base transition-shadow"
               />
             </div>
             <div>
-              <label htmlFor="password" className="block text-sm font-semibold text-bear-600 mb-1">
+              <label htmlFor="password" className="block text-xs font-bold uppercase tracking-[0.1em] text-bear-400 mb-1.5">
                 Password
               </label>
               <input
@@ -190,23 +204,28 @@ function LoginForm() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Your secret word"
-                className="w-full px-4 py-3 rounded-xl border border-bear-200 bg-cream-50 text-bear-600 placeholder-bear-200 focus:outline-none focus:ring-2 focus:ring-honey-400 text-base"
+                className="w-full px-4 py-3 rounded-xl border border-bear-200 bg-cream-50 text-bear-600 placeholder-bear-300 focus:outline-none focus:ring-2 focus:ring-honey-400 focus:border-transparent text-base transition-shadow"
               />
             </div>
-            {errorMsg && <p className="text-red-500 text-sm text-center">{errorMsg}</p>}
+            {errorMsg && (
+              <div className="flex items-center gap-2 p-3 bg-peach-100 border border-peach-200 rounded-xl">
+                <span className="text-sm">⚠️</span>
+                <p className="text-bear-600 text-sm">{errorMsg}</p>
+              </div>
+            )}
             <button
               type="submit"
               disabled={status === "loading"}
-              className="w-full py-3 px-6 bg-honey-500 hover:bg-honey-600 text-white font-bold rounded-xl transition-colors disabled:opacity-60 text-base"
+              className="w-full py-3 px-6 bg-honey-500 hover:bg-honey-600 active:scale-[0.98] text-white font-bold rounded-xl transition-all disabled:opacity-60 text-base shadow-sm"
             >
-              {status === "loading" ? "Signing in..." : "Sign in 🐾"}
+              {status === "loading" ? "Signing in…" : "Sign in →"}
             </button>
           </form>
         ) : (
           <form onSubmit={handleMagicLink} className="space-y-4">
-            <p className="text-bear-400 text-sm">Enter your email and we&#39;ll send you a sign-in link.</p>
+            <p className="text-bear-400 text-sm">Enter your email and we&apos;ll send you a one-click sign-in link.</p>
             <div>
-              <label htmlFor="email" className="block text-sm font-semibold text-bear-600 mb-1">
+              <label htmlFor="email" className="block text-xs font-bold uppercase tracking-[0.1em] text-bear-400 mb-1.5">
                 Email address
               </label>
               <input
@@ -216,16 +235,22 @@ function LoginForm() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
-                className="w-full px-4 py-3 rounded-xl border border-bear-200 bg-cream-50 text-bear-600 placeholder-bear-200 focus:outline-none focus:ring-2 focus:ring-honey-400 text-base"
+                autoComplete="email"
+                className="w-full px-4 py-3 rounded-xl border border-bear-200 bg-cream-50 text-bear-600 placeholder-bear-300 focus:outline-none focus:ring-2 focus:ring-honey-400 focus:border-transparent text-base transition-shadow"
               />
             </div>
-            {status === "error" && <p className="text-red-500 text-sm text-center">Something went wrong. Please try again.</p>}
+            {status === "error" && (
+              <div className="flex items-center gap-2 p-3 bg-peach-100 border border-peach-200 rounded-xl">
+                <span>⚠️</span>
+                <p className="text-bear-600 text-sm">Something went wrong. Please try again.</p>
+              </div>
+            )}
             <button
               type="submit"
               disabled={status === "loading"}
-              className="w-full py-3 px-6 bg-honey-500 hover:bg-honey-600 text-white font-bold rounded-xl transition-colors disabled:opacity-60 text-base"
+              className="w-full py-3 px-6 bg-honey-500 hover:bg-honey-600 active:scale-[0.98] text-white font-bold rounded-xl transition-all disabled:opacity-60 text-base shadow-sm"
             >
-              {status === "loading" ? "Sending..." : "Send magic link 🍯"}
+              {status === "loading" ? "Sending…" : "Send magic link 🍯"}
             </button>
           </form>
         )}
@@ -235,9 +260,9 @@ function LoginForm() {
 
       {process.env.NODE_ENV === "development" && <DevLoginButton />}
 
-      <p className="text-center text-bear-200 text-xs mt-6">
+      <p className="text-center text-bear-300 text-xs mt-6">
         This app is invite-only. Contact{" "}
-        <Link href="mailto:daria@example.com" className="underline">your admin</Link>{" "}
+        <Link href="mailto:daria@example.com" className="text-honey-600 underline underline-offset-1">your admin</Link>{" "}
         to get access.
       </p>
     </div>

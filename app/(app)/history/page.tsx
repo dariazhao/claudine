@@ -3,6 +3,7 @@ import { getSession } from "@/lib/auth/session";
 import { prisma } from "@/lib/db";
 import { SentimentLabel } from "@prisma/client";
 import BearMascot from "@/components/bear/BearMascot";
+import Link from "next/link";
 
 const LABEL_CONFIG: Record<
   SentimentLabel,
@@ -42,7 +43,13 @@ export default async function HistoryPage() {
         <div className="text-center py-16 bg-white rounded-3xl border border-bear-100 shadow-warm-sm">
           <BearMascot mood="sleepy" size={90} className="mx-auto mb-4" />
           <p className="font-display italic font-bold text-bear-600 text-xl mb-1">No entries yet</p>
-          <p className="text-bear-400 text-sm">Complete your first check-in and it&apos;ll show up here.</p>
+          <p className="text-bear-400 text-sm mb-5">Complete your first check-in and it&apos;ll show up here.</p>
+          <Link
+            href="/checkin"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-honey-500 hover:bg-honey-600 text-white font-bold text-sm transition-colors shadow-sm"
+          >
+            Start my first check-in →
+          </Link>
         </div>
       ) : (
         <div className="space-y-3">

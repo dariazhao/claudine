@@ -32,7 +32,7 @@ export default async function DashboardPage() {
     }),
     prisma.entry.findMany({
       where: { createdAt: { gte: today } },
-      include: { user: { select: { name: true } } },
+      include: { user: { select: { name: true, id: true } } },
       orderBy: { createdAt: "desc" },
       take: 20,
     }),
@@ -49,18 +49,23 @@ export default async function DashboardPage() {
       value: members.length,
       emoji: "👥",
       color: "text-bear-600",
+      bg: "bg-white border-bear-100",
     },
     {
       label: "Checked in today",
       value: `${totalCheckedIn} / ${members.length}`,
-      emoji: "✅",
+      emoji: "✓",
       color: "text-green-700",
+      bg: totalCheckedIn === members.length && members.length > 0
+        ? "bg-green-50 border-green-200"
+        : "bg-white border-bear-100",
     },
     {
       label: "Open flags",
       value: openFlagCount,
       emoji: "🚩",
-      color: openFlagCount > 0 ? "text-red-600" : "text-bear-200",
+      color: openFlagCount > 0 ? "text-red-600" : "text-bear-300",
+      bg: openFlagCount > 0 ? "bg-red-50 border-red-200" : "bg-white border-bear-100",
     },
   ];
 
@@ -85,12 +90,12 @@ export default async function DashboardPage() {
         {stats.map((s) => (
           <div
             key={s.label}
-            className="bg-white rounded-2xl border border-bear-100 p-4 text-center shadow-sm"
+            className={`rounded-2xl border p-4 text-center shadow-sm transition-colors ${s.bg}`}
           >
             <div className={`text-2xl font-extrabold ${s.color}`}>
               {s.value}
             </div>
-            <div className="text-xs text-bear-300 mt-0.5 font-bold">{s.label}</div>
+            <div className="text-xs text-bear-400 mt-0.5 font-semibold">{s.label}</div>
           </div>
         ))}
       </div>
@@ -135,6 +140,7 @@ export default async function DashboardPage() {
             <ActivityFeed
               items={recentEntries.map((e) => ({
                 id: e.id,
+                userId: e.user.id,
                 userName: e.user.name,
                 sentimentLabel: e.sentimentLabel,
                 isAnomaly: e.isAnomaly,

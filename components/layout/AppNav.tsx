@@ -64,9 +64,10 @@ function IconFlags({ active }: { active: boolean }) {
 interface AppNavProps {
   userName: string;
   role: Role;
+  openFlagCount?: number;
 }
 
-export default function AppNav({ userName, role }: AppNavProps) {
+export default function AppNav({ userName, role, openFlagCount = 0 }: AppNavProps) {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -107,11 +108,12 @@ export default function AppNav({ userName, role }: AppNavProps) {
           <div className="hidden md:flex items-center gap-0.5">
             {tabs.map(({ href, label, Icon }) => {
               const active = !!pathname?.startsWith(href);
+              const showBadge = href === "/flags" && openFlagCount > 0;
               return (
                 <Link
                   key={href}
                   href={href}
-                  className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-sm font-bold transition-all duration-150 ${
+                  className={`relative flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-sm font-bold transition-all duration-150 ${
                     active
                       ? "bg-honey-50 text-honey-600"
                       : "text-bear-400 hover:bg-cream-100 hover:text-bear-600"
@@ -119,6 +121,11 @@ export default function AppNav({ userName, role }: AppNavProps) {
                 >
                   <Icon active={active} />
                   <span>{label}</span>
+                  {showBadge && (
+                    <span className="ml-0.5 bg-red-500 text-white text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1 leading-none">
+                      {openFlagCount > 9 ? "9+" : openFlagCount}
+                    </span>
+                  )}
                 </Link>
               );
             })}
@@ -151,15 +158,23 @@ export default function AppNav({ userName, role }: AppNavProps) {
         >
           {tabs.map(({ href, label, Icon }) => {
             const active = !!pathname?.startsWith(href);
+            const showBadge = href === "/flags" && openFlagCount > 0;
             return (
               <Link
                 key={href}
                 href={href}
-                className={`flex flex-col items-center justify-center gap-0.5 pt-1 transition-colors ${
+                className={`relative flex flex-col items-center justify-center gap-0.5 pt-1 transition-colors ${
                   active ? "text-honey-500" : "text-bear-300"
                 }`}
               >
-                <Icon active={active} />
+                <span className="relative">
+                  <Icon active={active} />
+                  {showBadge && (
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center leading-none">
+                      {openFlagCount > 9 ? "9+" : openFlagCount}
+                    </span>
+                  )}
+                </span>
                 <span className="text-[10px] font-bold tracking-wide leading-none">
                   {label}
                 </span>

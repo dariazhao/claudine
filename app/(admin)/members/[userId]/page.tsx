@@ -49,68 +49,79 @@ export default async function MemberDetailPage({
   const last7 = member.entries.slice(0, 7);
 
   return (
-    <div className="space-y-6">
+    <div className="page-enter space-y-6">
       <div className="flex items-center gap-3">
-        <Link href="/members" className="text-bear-200 hover:text-bear-400 text-sm font-semibold">
-          ← Members
+        <Link
+          href="/members"
+          className="inline-flex items-center gap-1.5 text-sm font-bold text-bear-400 hover:text-bear-600 hover:bg-cream-100 px-3 py-1.5 rounded-xl transition-colors"
+        >
+          ← Family
         </Link>
       </div>
 
       {/* Member header */}
-      <div className="bg-white rounded-2xl border border-bear-100 p-5">
-        <div className="flex items-start justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-14 h-14 rounded-full bg-bear-100 flex items-center justify-center text-bear-600 font-bold text-xl">
-              {member.name.charAt(0).toUpperCase()}
+      <div className="bg-white rounded-3xl border border-bear-100 shadow-warm-sm p-6">
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-bear-100 flex items-center justify-center text-bear-600 font-bold text-xl flex-shrink-0">
+              {member.name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase()}
             </div>
             <div>
-              <h1 className="text-xl font-extrabold text-bear-600">
+              <p className="text-xs font-bold uppercase tracking-[0.15em] text-honey-500 mb-0.5">Member</p>
+              <h1 className="font-display italic font-bold text-2xl text-bear-600 leading-tight">
                 {member.name}
               </h1>
               <p className="text-bear-400 text-sm">{member.email}</p>
-              <div className="flex items-center gap-2 mt-1">
-                <span
-                  className={`text-xs font-bold px-2 py-0.5 rounded-full border ${
-                    checkedInToday
-                      ? "bg-green-50 text-green-700 border-green-200"
-                      : "bg-peach-100 text-peach-400 border-peach-200"
-                  }`}
-                >
-                  {checkedInToday ? "✓ Checked in today" : "○ Not yet today"}
-                </span>
-                <FlagBadge
-                  count={member.entries.filter((e) => e.isAnomaly && !e.flagReviewed).length}
-                />
-              </div>
             </div>
           </div>
 
           {member.baseline && (
-            <div className="text-right">
-              <p className="text-xs text-bear-200">Baseline</p>
-              <p className="text-sm font-bold text-bear-600">
-                {member.baseline.mean.toFixed(2)} ±{" "}
-                {member.baseline.stdDev.toFixed(2)}
+            <div className="text-right bg-cream-100 rounded-2xl px-4 py-3 flex-shrink-0">
+              <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-bear-300 mb-1">Baseline</p>
+              <p className="text-base font-extrabold text-bear-600">
+                {member.baseline.mean.toFixed(2)} <span className="text-bear-300 font-bold text-sm">±{member.baseline.stdDev.toFixed(2)}</span>
               </p>
-              <p className="text-xs text-bear-200">
-                {member.baseline.sampleCount} samples
+              <p className="text-xs text-bear-300">
+                {member.baseline.sampleCount} entries
               </p>
             </div>
           )}
         </div>
 
+        <div className="flex items-center gap-2 mt-3">
+          <span
+            className={`text-xs font-bold px-2.5 py-1 rounded-full border ${
+              checkedInToday
+                ? "bg-green-50 text-green-700 border-green-200"
+                : "bg-peach-100 text-peach-400 border-peach-200"
+            }`}
+          >
+            {checkedInToday ? "✓ Checked in today" : "Not yet today"}
+          </span>
+          <FlagBadge
+            count={member.entries.filter((e) => e.isAnomaly && !e.flagReviewed).length}
+          />
+        </div>
+
         {/* 7-day sparkline */}
-        <div className="mt-4">
-          <p className="text-xs text-bear-200 mb-2">7-day mood trend</p>
-          <SentimentSparkline data={last7} height={64} />
+        <div className="mt-5">
+          <p className="text-xs font-bold uppercase tracking-[0.12em] text-bear-300 mb-2">7-day mood trend</p>
+          <SentimentSparkline data={last7} height={100} />
         </div>
       </div>
 
       {/* Entry history */}
       <div>
-        <h2 className="text-lg font-bold text-bear-600 mb-3">
-          Entry history
-        </h2>
+        <div className="flex items-baseline gap-2 mb-3">
+          <h2 className="text-lg font-bold text-bear-600">Entry history</h2>
+          <span className="text-bear-300 text-sm font-semibold">{member.entries.length} entries</span>
+        </div>
+        {member.entries.length === 0 && (
+          <div className="text-center py-10 bg-white rounded-2xl border border-bear-100">
+            <p className="text-bear-400 font-semibold text-sm">No entries yet</p>
+            <p className="text-bear-300 text-xs mt-1">This member hasn&apos;t checked in yet</p>
+          </div>
+        )}
         <div className="space-y-3">
           {member.entries.map((entry) => (
             <div
@@ -151,11 +162,11 @@ export default async function MemberDetailPage({
                 </div>
               </div>
 
-              <p className="text-bear-400 text-xs italic mb-1.5 line-clamp-1">
+              <p className="text-bear-400 text-xs italic mb-1.5">
                 &#8220;{entry.prompt.body}&#8221;
               </p>
 
-              <p className="text-bear-600 text-sm leading-relaxed line-clamp-3">
+              <p className="text-bear-600 text-sm leading-relaxed">
                 {entry.body}
               </p>
 

@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import BearMascot from "@/components/bear/BearMascot";
 import MarkReviewedButton from "./MarkReviewedButton";
+import ReviewedSection from "./ReviewedSection";
 
 export const dynamic = "force-dynamic";
 
@@ -98,36 +99,15 @@ export default async function FlagsPage() {
         </div>
       )}
 
-      {reviewed.length > 0 && (
-        <div>
-          <h2 className="text-base font-bold text-bear-200 mb-3">Reviewed</h2>
-          <div className="space-y-3">
-            {reviewed.map((flag) => (
-              <div
-                key={flag.id}
-                className="bg-white border border-bear-100 rounded-2xl p-4 opacity-60"
-              >
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <p className="font-semibold text-bear-400 text-sm">
-                      {flag.user.name}
-                    </p>
-                    <p className="text-bear-200 text-xs">
-                      {new Date(flag.createdAt).toLocaleDateString()}
-                    </p>
-                  </div>
-                  <span className="text-xs text-bear-200 bg-bear-50 px-2 py-0.5 rounded-full border border-bear-100">
-                    ✓ Reviewed
-                  </span>
-                </div>
-                <p className="text-bear-400 text-sm mt-2 line-clamp-2">
-                  {flag.body}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      <ReviewedSection
+        entries={reviewed.map((f) => ({
+          id: f.id,
+          userName: f.user.name,
+          email: f.user.email,
+          createdAt: f.createdAt.toISOString(),
+          body: f.body,
+        }))}
+      />
     </div>
   );
 }
