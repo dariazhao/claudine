@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Claudine — Know they're okay.</title>
+  <meta name="description" content="A gentle daily check-in for the people you love — and a quiet window into how they're really doing." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;1,9..144,300;1,9..144,500;1,9..144,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink:          #1a0e08;
+      --ink-2:        #241408;
+      --warm:         #faf5ef;
+      --surface:      #fff9f3;
+      --amber:        #c97d1e;
+      --amber-light:  #f0a832;
+      --amber-glow:   rgba(201,125,30,0.14);
+      --bear:         #c8956c;
+      --bear-pale:    #f5ede0;
+      --muted:        #7a5c45;
+      --muted-light:  #b08060;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background: var(--surface);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ──────────────────────────────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2.5rem; height: 64px;
+      transition: background 0.4s, backdrop-filter 0.4s, border-color 0.4s;
+      border-bottom: 1px solid transparent;
+    }
+    nav.scrolled {
+      background: rgba(26,14,8,0.92);
+      backdrop-filter: blur(16px);
+      border-color: rgba(255,255,255,0.07);
+    }
+    .nav-logo {
+      font-family: 'Fraunces', Georgia, serif;
+      font-style: italic; font-size: 1.5rem; font-weight: 600;
+      color: #fff; text-decoration: none; letter-spacing: -0.02em;
+    }
+    .nav-cta {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      padding: 0.5rem 1.25rem;
+      border: 1.5px solid rgba(255,255,255,0.22);
+      border-radius: 100px;
+      font-size: 0.875rem; font-weight: 500; color: #fff;
+      text-decoration: none; transition: all 0.2s;
+    }
+    .nav-cta:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.45); }
+    .nav-cta svg { transition: transform 0.2s; }
+    .nav-cta:hover svg { transform: translateX(3px); }
+
+    /* ── HERO ─────────────────────────────────────────────────────────────── */
+    .hero {
+      min-height: 100svh;
+      background: var(--ink);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 9rem 1.5rem 6rem;
+      position: relative; overflow: hidden;
+    }
+    .hero-glow {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -60%);
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(201,125,30,0.16) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .hero-eyebrow {
+      font-size: 0.7rem; font-weight: 600;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--amber-light); margin-bottom: 2rem;
+      opacity: 0; animation: fade-up 0.7s 0.1s ease both;
+    }
+    .hero-title {
+      font-family: 'Fraunces', serif; font-optical-sizing: auto;
+      font-size: clamp(3.25rem, 9vw, 6.5rem);
+      font-weight: 700; line-height: 1.0; letter-spacing: -0.035em;
+      color: #fff; max-width: 14ch; margin: 0 auto 1.75rem;
+      opacity: 0; animation: fade-up 0.75s 0.25s ease both;
+    }
+    .hero-title em { font-style: italic; color: var(--amber-light); }
+    .hero-sub {
+      font-size: clamp(1rem, 2vw, 1.1875rem);
+      line-height: 1.65; font-weight: 300;
+      color: rgba(255,255,255,0.48);
+      max-width: 44ch; margin: 0 auto 3rem;
+      opacity: 0; animation: fade-up 0.75s 0.42s ease both;
+    }
+    .hero-actions {
+      display: flex; align-items: center; gap: 1rem;
+      flex-wrap: wrap; justify-content: center;
+      opacity: 0; animation: fade-up 0.75s 0.58s ease both;
+    }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.9375rem 2.25rem; background: var(--amber);
+      color: #fff; font-size: 0.9375rem; font-weight: 600;
+      border-radius: 100px; text-decoration: none; border: none; cursor: pointer;
+      transition: all 0.2s; letter-spacing: 0.01em;
+    }
+    .btn-primary:hover {
+      background: #a96510;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(201,125,30,0.35);
+    }
+    .btn-text {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      padding: 0.9375rem 1.5rem; color: rgba(255,255,255,0.42);
+      font-size: 0.9375rem; font-weight: 400;
+      text-decoration: none; transition: color 0.2s;
+    }
+    .btn-text:hover { color: rgba(255,255,255,0.75); }
+
+    /* ── DIVIDER ──────────────────────────────────────────────────────────── */
+    .divider {
+      width: 1px; height: 80px;
+      background: linear-gradient(to bottom, rgba(201,125,30,0.4), transparent);
+      margin: 0 auto;
+    }
+
+    /* ── PULL QUOTE ───────────────────────────────────────────────────────── */
+    .pullquote {
+      background: var(--warm);
+      padding: 6rem 2rem; text-align: center;
+    }
+    .pullquote blockquote {
+      font-family: 'Fraunces', serif; font-style: italic; font-optical-sizing: auto;
+      font-size: clamp(1.25rem, 3vw, 1.9375rem);
+      line-height: 1.45; color: var(--muted);
+      max-width: 52ch; margin: 0 auto; font-weight: 300;
+    }
+    .pullquote blockquote strong {
+      font-style: normal; font-weight: 600; color: var(--ink);
+    }
+    .pullquote cite {
+      display: block; margin-top: 1.5rem;
+      font-size: 0.8125rem; font-style: normal;
+      font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--muted-light);
+    }
+
+    /* ── SECTION SHARED ───────────────────────────────────────────────────── */
+    .section { padding: 6rem 2rem; }
+    .section-inner { max-width: 1000px; margin: 0 auto; }
+    .section-label {
+      font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--amber); margin-bottom: 0.875rem;
+    }
+    .section-title {
+      font-family: 'Fraunces', serif; font-optical-sizing: auto;
+      font-size: clamp(1.875rem, 4.5vw, 3rem);
+      font-weight: 700; line-height: 1.12; letter-spacing: -0.025em;
+      color: var(--ink); max-width: 24ch; margin-bottom: 3.5rem;
+    }
+    .section-title.light { color: #fff; }
+
+    /* ── HOW IT WORKS ─────────────────────────────────────────────────────── */
+    .how { background: var(--surface); }
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 3rem;
+    }
+    .step { display: flex; flex-direction: column; gap: 0.875rem; }
+    .step-num {
+      font-family: 'Fraunces', serif; font-style: italic;
+      font-optical-sizing: auto;
+      font-size: 3rem; font-weight: 300;
+      color: var(--amber); line-height: 1;
+    }
+    .step-title { font-size: 1.0625rem; font-weight: 600; color: var(--ink); }
+    .step-body  { font-size: 0.9375rem; line-height: 1.7; color: var(--muted); font-weight: 300; }
+
+    /* ── FEATURES ─────────────────────────────────────────────────────────── */
+    .features { background: var(--ink-2); }
+    .features .section-label { color: var(--amber-light); }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 1.25rem;
+    }
+    .feature-card {
+      background: rgba(255,255,255,0.035);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 1.25rem; padding: 1.75rem;
+      transition: background 0.25s, border-color 0.25s;
+    }
+    .feature-card:hover {
+      background: rgba(255,255,255,0.065);
+      border-color: rgba(201,125,30,0.28);
+    }
+    .feature-icon {
+      width: 42px; height: 42px; border-radius: 11px;
+      background: var(--amber-glow);
+      border: 1px solid rgba(201,125,30,0.22);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1.25rem; font-size: 1.125rem;
+    }
+    .feature-title { font-size: 1rem; font-weight: 600; color: #fff; margin-bottom: 0.5rem; }
+    .feature-body  { font-size: 0.875rem; line-height: 1.7; color: rgba(255,255,255,0.38); font-weight: 300; }
+
+    /* ── WARMTH ───────────────────────────────────────────────────────────── */
+    .warmth { background: var(--bear-pale); }
+    .warmth-inner {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 5rem; align-items: center;
+    }
+    .warmth-text .section-title { margin-bottom: 1.25rem; }
+    .warmth-desc {
+      font-size: 1rem; line-height: 1.75; color: var(--muted);
+      font-weight: 300; margin-bottom: 1.5rem;
+    }
+    .warmth-note {
+      font-family: 'Fraunces', serif; font-style: italic;
+      font-size: 1rem; color: var(--muted-light); font-weight: 300;
+    }
+    .bears-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem;
+    }
+    .bear-chip {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 0.5rem;
+      padding: 0.875rem 0.5rem;
+      background: #fff;
+      border-radius: 1rem;
+      border: 1.5px solid rgba(200,149,108,0.2);
+      box-shadow: 0 2px 10px rgba(139,94,60,0.07);
+    }
+    .bear-chip-label {
+      font-size: 0.625rem; font-weight: 700;
+      color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em;
+    }
+
+    /* ── CTA SECTION ──────────────────────────────────────────────────────── */
+    .cta-section {
+      background: var(--ink);
+      padding: 8rem 2rem; text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .cta-glow {
+      position: absolute; bottom: -200px; left: 50%; transform: translateX(-50%);
+      width: 600px; height: 400px;
+      background: radial-gradient(ellipse, rgba(201,125,30,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .cta-section .section-label { color: var(--amber-light); }
+    .cta-section .section-title { color: #fff; margin: 0.75rem auto 1rem; max-width: 28ch; }
+    .cta-sub {
+      font-size: 1rem; color: rgba(255,255,255,0.38);
+      margin-bottom: 2.5rem; font-weight: 300;
+    }
+    .waitlist-form {
+      display: flex; gap: 0.75rem; max-width: 440px;
+      margin: 0 auto; flex-wrap: wrap; justify-content: center;
+    }
+    .waitlist-input {
+      flex: 1; min-width: 200px;
+      padding: 0.9rem 1.25rem;
+      background: rgba(255,255,255,0.06);
+      border: 1.5px solid rgba(255,255,255,0.12);
+      border-radius: 100px; color: #fff;
+      font-size: 0.9375rem; font-family: 'DM Sans', sans-serif;
+      outline: none; transition: border-color 0.2s;
+    }
+    .waitlist-input::placeholder { color: rgba(255,255,255,0.28); }
+    .waitlist-input:focus { border-color: rgba(201,125,30,0.6); }
+    .waitlist-note {
+      font-size: 0.8125rem; color: rgba(255,255,255,0.22);
+      margin-top: 1.125rem;
+    }
+
+    /* ── FOOTER ───────────────────────────────────────────────────────────── */
+    footer {
+      background: var(--ink);
+      border-top: 1px solid rgba(255,255,255,0.05);
+      padding: 2rem 2.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem;
+    }
+    .footer-logo {
+      font-family: 'Fraunces', serif; font-style: italic;
+      font-size: 1.25rem; font-weight: 600;
+      color: rgba(255,255,255,0.3); text-decoration: none;
+    }
+    .footer-note { font-size: 0.8125rem; color: rgba(255,255,255,0.18); }
+
+    /* ── ANIMATIONS ───────────────────────────────────────────────────────── */
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .reveal {
+      opacity: 0; transform: translateY(28px);
+      transition: opacity 0.75s ease, transform 0.75s ease;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+
+    /* ── RESPONSIVE ───────────────────────────────────────────────────────── */
+    @media (max-width: 720px) {
+      nav { padding: 0 1.25rem; }
+      .warmth-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+      .warmth-inner > .warmth-text { order: 2; }
+      .warmth-inner > .bears-grid-wrap { order: 1; }
+      .section { padding: 4rem 1.5rem; }
+      .cta-section { padding: 5rem 1.5rem; }
+      footer { padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ──────────────────────────────────────────────────────────────── -->
+<nav id="nav">
+  <a href="#" class="nav-logo">Claudine</a>
+  <a href="#waitlist" class="nav-cta">
+    Request access
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+  </a>
+</nav>
+
+<!-- ── HERO ─────────────────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-glow" aria-hidden="true"></div>
+  <p class="hero-eyebrow">Daily wellness · Invite only</p>
+  <h1 class="hero-title">Know they're <em>okay.</em></h1>
+  <p class="hero-sub">
+    A gentle daily check-in for the people you love —
+    and a quiet window into how they're really doing.
+  </p>
+  <div class="hero-actions">
+    <a href="#waitlist" class="btn-primary">
+      Request early access
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+    <a href="#how" class="btn-text">
+      See how it works
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+    </a>
+  </div>
+</section>
+
+<!-- ── PULL QUOTE ────────────────────────────────────────────────────────── -->
+<section class="pullquote">
+  <blockquote class="reveal">
+    Between demanding jobs and the quiet fear that something might be wrong —
+    <strong>most families settle for texts that say "fine."</strong>
+  </blockquote>
+  <cite class="reveal reveal-delay-1">You deserve more than "fine."</cite>
+</section>
+
+<!-- ── HOW IT WORKS ──────────────────────────────────────────────────────── -->
+<section class="section how" id="how">
+  <div class="section-inner">
+    <p class="section-label reveal">How it works</p>
+    <h2 class="section-title reveal">Three steps to staying close.</h2>
+    <div class="steps">
+      <div class="step reveal">
+        <span class="step-num">01</span>
+        <p class="step-title">A gentle prompt arrives every morning</p>
+        <p class="step-body">Each day, family members receive a warm reflective question — sent by email, SMS, or WhatsApp, whatever they prefer. No app to download.</p>
+      </div>
+      <div class="step reveal reveal-delay-1">
+        <span class="step-num">02</span>
+        <p class="step-title">They take two minutes to respond</p>
+        <p class="step-body">A short journal entry and an optional mood check-in. It becomes a quiet morning ritual — not a chore, not an obligation.</p>
+      </div>
+      <div class="step reveal reveal-delay-2">
+        <span class="step-num">03</span>
+        <p class="step-title">You see the full picture</p>
+        <p class="step-body">Your dashboard shows each person's emotional arc over time. Claudine flags anything that looks like a significant shift — before it becomes a crisis.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FEATURES ──────────────────────────────────────────────────────────── -->
+<section class="section features">
+  <div class="section-inner">
+    <p class="section-label reveal">Built thoughtfully</p>
+    <h2 class="section-title light reveal">The intelligence beneath<br/>the warmth.</h2>
+    <div class="features-grid">
+      <div class="feature-card reveal">
+        <div class="feature-icon">✦</div>
+        <p class="feature-title">Sentiment analysis</p>
+        <p class="feature-body">Every entry is quietly analyzed by AI for emotional tone — scored on a spectrum from joyful to distressed, without any burden on the person writing.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-1">
+        <div class="feature-icon">◎</div>
+        <p class="feature-title">Anomaly detection</p>
+        <p class="feature-body">Claudine builds a personal emotional baseline for each family member. When something shifts significantly, you're flagged — not alarmed, just informed.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-2">
+        <div class="feature-icon">❧</div>
+        <p class="feature-title">Curated daily prompts</p>
+        <p class="feature-body">30+ prompts across five categories — connection, gratitude, body, memory, and daily reflection. The same question for everyone on a given day creates an unexpected sense of community.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-3">
+        <div class="feature-icon">⬡</div>
+        <p class="feature-title">Your private dashboard</p>
+        <p class="feature-body">A clean overview of everyone you're watching over. 7-day mood sparklines, today's check-in status, and flagged entries all in one place.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── WARMTH ────────────────────────────────────────────────────────────── -->
+<section class="section warmth">
+  <div class="section-inner">
+    <div class="warmth-inner">
+      <div class="warmth-text">
+        <p class="section-label reveal">Designed with warmth</p>
+        <h2 class="section-title reveal">Emotional vocabulary, not emoji.</h2>
+        <p class="warmth-desc reveal">
+          Most wellness apps reduce feelings to a five-point scale or a color. Claudine's check-in uses eight distinct moods — each one a bear face designed to be recognized, not decoded.
+        </p>
+        <p class="warmth-desc reveal reveal-delay-1">
+          The bear isn't a mascot. It's a design decision: familiarity lowers the barrier to honest reflection. Your 78-year-old grandmother will tap "worried" more readily than she'll write "I'm anxious today."
+        </p>
+        <p class="warmth-note reveal reveal-delay-2">
+          "Cozy enough to become a habit. Honest enough to matter."
+        </p>
+      </div>
+
+      <div class="bears-grid-wrap reveal">
+        <div class="bears-grid">
+          <!-- Joyful -->
+          <div class="bear-chip">
+            <svg width="52" height="52" viewBox="0 0 60 60" aria-hidden="true">
+              <circle cx="11" cy="13" r="9" fill="#c8956c"/><circle cx="11" cy="13" r="5.5" fill="#e8c4a0"/>
+              <circle cx="49" cy="13" r="9" fill="#c8956c"/><circle cx="49" cy="13" r="5.5" fill="#e8c4a0"/>
+              <circle cx="30" cy="30" r="24" fill="#c8956c"/>
+              <ellipse cx="30" cy="38" rx="12" ry="9" fill="#e8c4a0"/>
+              <path d="M 18 23 Q 23 17 28 23" stroke="#1a0a00" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+              <path d="M 32 23 Q 37 17 42 23" stroke="#1a0a00" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+              <circle cx="18" cy="35" r="5" fill="#f4a0b0" opacity="0.5"/>
+              <circle cx="42" cy="35" r="5" fill="#f4a0b0" opacity="0.5"/>
+              <ellipse cx="30" cy="33" rx="3" ry="2" fill="#b07848"/>
+              <path d="M 22 39 Q 30 47 38 39" stroke="#1a0a00" stroke-width="2" fill="none" stroke-linecap="round"/>
+            </svg>
+            <span class="bear-chip-label">Joyful</span>
+          </div>
+          <!-- Happy -->
+          <div class="bear-chip">
+            <svg width="52" height="52" viewBox="0 0 60 60" aria-hidden="true">
+              <circle cx="11" cy="13" r="9" fill="#c8956c"/><circle cx="11" cy="13" r="5.5" fill="#e8c4a0"/>
+              <circle cx="49" cy="13" r="9" fill="#c8956c"/><circle cx="49" cy="13" r="5.5" fill="#e8c4a0"/>
+              <circle cx="30" cy="30" r="24" fill="#c8956c"/>
+              <ellipse cx="30" cy="38" rx="12" ry="9" fill="#e8c4a0"/>
+              <circle cx="22" cy="24" r="3.5" fill="#1a0a00"/>
+              <circle cx="38" cy="24" r="3.5" fill="#1a0a00"/>
+              <circle cx="23.5" cy="22.5" r="1.2" fill="white"/>
+              <circle cx="39.5" cy="22.5" r="1.2" fill="white"/>
+              <circle cx="17" cy="34" r="5" fill="#f4a0b0" opacity="0.45"/>
+              <circle cx="43" cy="34" r="5" fill="#f4a0b0" opacity="0.45"/>
+              <ellipse cx="30" cy="33" rx="3" ry="2" fill="#b07848"/>
+              <path d="M 22 39 Q 30 46 38 39" stroke="#1a0a00" stroke-width="2" fill="none" stroke-linecap="round"/>
+            </svg>
+            <span class="bear-chip-label">Happy</span>
+          </div>
+          <!-- Calm -->
+          <div class="bear-chip">
+            <svg width="52" height="52" viewBox="0 0 60 60" aria-hidden="true">
+              <circle cx="11" cy="13" r="9" fill="#c8956c"/><circle cx="11" cy="13" r="5.5" fill="#e8c4a0"/>
+              <circle cx="49" cy="13" r="9" fill="#c8956c"/><circle cx="49" cy="13" r="5.5" fill="#e8c4a0"/>
+              <circle cx="30" cy="30" r="24" fill="#c8956c"/>
+              <ellipse cx="30" cy="38" rx="12" ry="9" fill="#e8c4a0"/>
+              <path d="M 18 24 Q 22 29 27 24" stroke="#1a0a00" stroke-width="2.5" fill="#1a0a00" stroke-linecap="round"/>
+              <path d="M 33 24 Q 37 29 42 24" stroke="#1a0a00" stroke-width="2.5" fill="#1a0a00" stroke-linecap="round"/>
+              <circle cx="17" cy="34" r="4" fill="#f4a0b0" opacity="0.35"/>
+              <circle cx="43" cy="34" r="4" fill="#f4a0b0" opacity="0.35"/>
+              <ellipse cx="30" cy="33" rx="3" ry="2" fill="#b07848"/>
+              <path d="M 23 39 Q 30 44 37 39" stroke="#1a0a00" stroke-width="2" fill="none" stroke-linecap="round"/>
+            </svg>
+            <span class="bear-chip-label">Calm</span>
+          </div>
+          <!-- Tired -->
+          <div class="bear-chip">
+            <svg width="52" height="52" viewBox="0 0 60 60" aria-hidden="true">
+              <circle cx="11" cy="13" r="9" fill="#c8956c"/><circle cx="11" cy="13" r="5.5" fill="#e8c4a0"/>
+              <circle cx="49" cy="13" r="9" fill="#c8956c"/><circle cx="49" cy="13" r="5.5" fill="#e8c4a0"/>
+              <circle cx="30" cy="30" r="24" fill="#c8956c"/>
+              <ellipse cx="30" cy="38" rx="12" ry="9" fill="#e8c4a0"/>
+              <path d="M 18 25 Q 22 30 27 25" stroke="#1a0a00" stroke-width="2.5" fill="#1a0a00" stroke-linecap="round"/>
+              <path d="M 33 25 Q 37 30 42 25" stroke="#1a0a00" stroke-width="2.5" fill="#1a0a00" stroke-linecap="round"/>
+              <circle cx="17" cy="34" r="4" fill="#f4a0b0" opacity="0.25"/>
+              <circle cx="43" cy="34" r="4" fill="#f4a0b0" opacity="0.25"/>
+              <ellipse cx="30" cy="33" rx="3" ry="2" fill="#b07848"/>
+              <path d="M 25 40 Q 30 44 35 40" stroke="#1a0a00" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+              <text x="40" y="18" font-size="7" fill="#c8956c" font-weight="bold" opacity="0.8">z</text>
+            </svg>
+            <span class="bear-chip-label">Tired</span>
+          </div>
+          <!-- Worried -->
+          <div class="bear-chip">
+            <svg width="52" height="52" viewBox="0 0 60 60" aria-hidden="true">
+              <circle cx="11" cy="13" r="9" fill="#c8956c"/><circle cx="11" cy="13" r="5.5" fill="#e8c4a0"/>
+              <circle cx="49" cy="13" r="9" fill="#c8956c"/><circle cx="49" cy="13" r="5.5" fill="#e8c4a0"/>
+              <circle cx="30" cy="30" r="24" fill="#c8956c"/>
+              <ellipse cx="30" cy="38" rx="12" ry="9" fill="#e8c4a0"/>
+              <circle cx="22" cy="25" r="3" fill="#1a0a00"/>
+              <circle cx="38" cy="25" r="3" fill="#1a0a00"/>
+              <circle cx="23" cy="23.5" r="1" fill="white"/>
+              <circle cx="39" cy="23.5" r="1" fill="white"/>
+              <path d="M 17 18 Q 22 15 27 19" stroke="#1a0a00" stroke-width="2" fill="none" stroke-linecap="round"/>
+              <path d="M 33 19 Q 38 15 43 18" stroke="#1a0a00" stroke-width="2" fill="none" stroke-linecap="round"/>
+              <circle cx="17" cy="34" r="4" fill="#f4a0b0" opacity="0.2"/>
+              <circle cx="43" cy="34" r="4" fill="#f4a0b0" opacity="0.2"/>
+              <ellipse cx="30" cy="33" rx="3" ry="2" fill="#b07848"/>
+              <path d="M 22 41 Q 27 37 30 39 Q 33 41 38 37" stroke="#1a0a00" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+            </svg>
+            <span class="bear-chip-label">Worried</span>
+          </div>
+          <!-- Sad -->
+          <div class="bear-chip">
+            <svg width="52" height="52" viewBox="0 0 60 60" aria-hidden="true">
+              <circle cx="11" cy="13" r="9" fill="#c8956c"/><circle cx="11" cy="13" r="5.5" fill="#e8c4a0"/>
+              <circle cx="49" cy="13" r="9" fill="#c8956c"/><circle cx="49" cy="13" r="5.5" fill="#e8c4a0"/>
+              <circle cx="30" cy="30" r="24" fill="#c8956c"/>
+              <ellipse cx="30" cy="38" rx="12" ry="9" fill="#e8c4a0"/>
+              <circle cx="22" cy="25" r="3.5" fill="#1a0a00"/>
+              <circle cx="38" cy="25" r="3.5" fill="#1a0a00"/>
+              <circle cx="23.5" cy="23.5" r="1.2" fill="white"/>
+              <circle cx="39.5" cy="23.5" r="1.2" fill="white"/>
+              <circle cx="17" cy="34" r="4" fill="#f4a0b0" opacity="0.2"/>
+              <circle cx="43" cy="34" r="4" fill="#f4a0b0" opacity="0.2"/>
+              <ellipse cx="30" cy="33" rx="3" ry="2" fill="#b07848"/>
+              <path d="M 22 43 Q 30 37 38 43" stroke="#1a0a00" stroke-width="2" fill="none" stroke-linecap="round"/>
+              <ellipse cx="43" cy="31" rx="1.5" ry="2.5" fill="#93c5fd" opacity="0.8"/>
+            </svg>
+            <span class="bear-chip-label">Sad</span>
+          </div>
+          <!-- Excited -->
+          <div class="bear-chip">
+            <svg width="52" height="52" viewBox="0 0 60 60" aria-hidden="true">
+              <circle cx="11" cy="13" r="9" fill="#c8956c"/><circle cx="11" cy="13" r="5.5" fill="#e8c4a0"/>
+              <circle cx="49" cy="13" r="9" fill="#c8956c"/><circle cx="49" cy="13" r="5.5" fill="#e8c4a0"/>
+              <circle cx="30" cy="30" r="24" fill="#c8956c"/>
+              <ellipse cx="30" cy="38" rx="12" ry="9" fill="#e8c4a0"/>
+              <text x="16" y="29" font-size="11" fill="#f59e0b">★</text>
+              <text x="32" y="29" font-size="11" fill="#f59e0b">★</text>
+              <circle cx="17" cy="35" r="5" fill="#f4a0b0" opacity="0.6"/>
+              <circle cx="43" cy="35" r="5" fill="#f4a0b0" opacity="0.6"/>
+              <ellipse cx="30" cy="34" rx="3" ry="2" fill="#b07848"/>
+              <path d="M 21 40 Q 30 49 39 40" stroke="#1a0a00" stroke-width="2" fill="none" stroke-linecap="round"/>
+            </svg>
+            <span class="bear-chip-label">Excited</span>
+          </div>
+          <!-- Frustrated -->
+          <div class="bear-chip">
+            <svg width="52" height="52" viewBox="0 0 60 60" aria-hidden="true">
+              <circle cx="11" cy="13" r="9" fill="#c8956c"/><circle cx="11" cy="13" r="5.5" fill="#e8c4a0"/>
+              <circle cx="49" cy="13" r="9" fill="#c8956c"/><circle cx="49" cy="13" r="5.5" fill="#e8c4a0"/>
+              <circle cx="30" cy="30" r="24" fill="#c8956c"/>
+              <ellipse cx="30" cy="38" rx="12" ry="9" fill="#e8c4a0"/>
+              <circle cx="22" cy="26" r="3.5" fill="#1a0a00"/>
+              <circle cx="38" cy="26" r="3.5" fill="#1a0a00"/>
+              <path d="M 16 17 L 27 21" stroke="#1a0a00" stroke-width="3" stroke-linecap="round"/>
+              <path d="M 33 21 L 44 17" stroke="#1a0a00" stroke-width="3" stroke-linecap="round"/>
+              <circle cx="17" cy="35" r="4" fill="#f4956b" opacity="0.4"/>
+              <circle cx="43" cy="35" r="4" fill="#f4956b" opacity="0.4"/>
+              <ellipse cx="30" cy="34" rx="3" ry="2" fill="#b07848"/>
+              <path d="M 22 43 Q 30 38 38 43" stroke="#1a0a00" stroke-width="2" fill="none" stroke-linecap="round"/>
+              <text x="42" y="12" font-size="8" fill="#f4956b" opacity="0.7">~</text>
+            </svg>
+            <span class="bear-chip-label">Frustrated</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ───────────────────────────────────────────────────────────────── -->
+<section class="cta-section" id="waitlist">
+  <div class="cta-glow" aria-hidden="true"></div>
+  <p class="section-label reveal">Join the waitlist</p>
+  <h2 class="section-title reveal">For the people you can't stop thinking about.</h2>
+  <p class="cta-sub reveal">Claudine is currently invite-only. Leave your email and we'll reach out.</p>
+  <form class="waitlist-form reveal" onsubmit="handleSubmit(event)">
+    <input
+      type="email"
+      class="waitlist-input"
+      placeholder="your@email.com"
+      required
+      id="email-input"
+    />
+    <button type="submit" class="btn-primary" id="submit-btn">
+      Request access
+    </button>
+  </form>
+  <p class="waitlist-note reveal reveal-delay-1">No spam. No newsletters. Just an invitation when a spot opens.</p>
+</section>
+
+<!-- ── FOOTER ────────────────────────────────────────────────────────────── -->
+<footer>
+  <a href="#" class="footer-logo">Claudine</a>
+  <p class="footer-note">Made with care &nbsp;·&nbsp; Invite only</p>
+</footer>
+
+<script>
+  // Nav scroll effect
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 40);
+  }, { passive: true });
+
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Waitlist form
+  function handleSubmit(e) {
+    e.preventDefault();
+    const btn = document.getElementById('submit-btn');
+    const input = document.getElementById('email-input');
+    btn.textContent = 'You\'re on the list ✓';
+    btn.style.background = '#2d7a3a';
+    btn.disabled = true;
+    input.disabled = true;
+  }
+</script>
+</body>
+</html>
