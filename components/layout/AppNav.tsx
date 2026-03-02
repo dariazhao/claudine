@@ -99,7 +99,7 @@ export default function AppNav({ userName, role, openFlagCount = 0 }: AppNavProp
 
   async function handleSignOut() {
     await fetch("/api/auth/signout", { method: "POST" });
-    router.push("/login");
+    router.push("/");
   }
 
   return (
