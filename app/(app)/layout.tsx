@@ -15,7 +15,7 @@ export default async function AppLayout({
   return (
     <div className="min-h-screen bg-cream-50">
       <AppNav userName={session.name} role={session.role} />
-      <main className="max-w-2xl mx-auto px-4 py-8">{children}</main>
+      <main className="max-w-2xl mx-auto px-4 pt-8 pb-28 md:pb-10">{children}</main>
     </div>
   );
 }

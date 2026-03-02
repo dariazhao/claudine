@@ -1,73 +1,87 @@
 import Link from "next/link";
 import BearMascot from "@/components/bear/BearMascot";
 
+const FEATURES = [
+  {
+    bear: "happy" as const,
+    title: "A gentle question, every morning",
+    desc: "One warm prompt a day — no pressure, no judgment. Just a moment for you.",
+  },
+  {
+    bear: "celebrating" as const,
+    title: "Stay connected without calling",
+    desc: "The people who love you can check in quietly, from wherever they are.",
+  },
+  {
+    bear: "sleepy" as const,
+    title: "Private and cozy",
+    desc: "Your thoughts are yours. No social feed, no notifications for the world.",
+  },
+];
+
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-cream-50 flex flex-col page-enter">
-      {/* Hero */}
-      <div className="flex-1 flex flex-col items-center justify-center px-6 pt-16 pb-8 text-center">
-        {/* Floating bear */}
-        <div className="relative mb-6">
-          {/* Soft glow behind bear */}
+    <div className="min-h-screen bg-cream-50 page-enter">
+      {/* ── Hero ──────────────────────────────────────────────────────────── */}
+      <div className="relative flex flex-col items-center text-center px-6 pt-20 pb-16 overflow-hidden">
+        {/* Background gradient bloom */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          aria-hidden="true"
+          style={{
+            background:
+              "radial-gradient(ellipse 80% 60% at 50% 0%, rgba(251,191,36,0.12) 0%, transparent 70%)",
+          }}
+        />
+
+        {/* Eyebrow */}
+        <p className="relative z-10 text-xs font-bold uppercase tracking-[0.2em] text-honey-500 mb-8">
+          invite-only · takes 2 minutes a day
+        </p>
+
+        {/* Bear */}
+        <div className="relative z-10 mb-8">
           <div className="absolute inset-0 bg-honey-400 opacity-20 blur-3xl rounded-full scale-75" />
-          <BearMascot mood="celebrating" size={140} animate />
+          <BearMascot mood="celebrating" size={148} animate />
         </div>
 
-        <h1 className="text-5xl font-extrabold text-bear-600 mb-3 leading-tight">
-          Claudine
+        {/* Display heading */}
+        <h1 className="relative z-10 font-display italic font-bold text-bear-600 text-5xl leading-tight mb-4 max-w-sm">
+          For the people<br />you love most
         </h1>
-        <p className="text-xl font-bold text-bear-400 mb-4">
-          Your daily check-in companion
-        </p>
-        <p className="text-bear-400 text-base leading-relaxed mb-10 max-w-xs">
-          A warm, gentle moment to reflect — and help the people who love you
-          know you're doing okay.
+
+        <p className="relative z-10 text-bear-400 text-base leading-relaxed mb-10 max-w-xs">
+          A warm daily moment to reflect — and help the people who care about you
+          know you&apos;re doing okay.
         </p>
 
         <Link
           href="/login"
-          className="inline-flex items-center gap-2.5 px-10 py-4 bg-honey-500 hover:bg-honey-600 active:scale-95 text-white font-extrabold rounded-2xl text-lg transition-all shadow-md"
+          className="relative z-10 inline-flex items-center gap-3 px-10 py-4 bg-honey-500 hover:bg-honey-600 active:scale-95 text-white font-extrabold rounded-2xl text-lg transition-all shadow-warm"
         >
           <span>Get started</span>
           <span className="text-xl">🐾</span>
         </Link>
-
-        <p className="mt-4 text-bear-200 text-sm">
-          Invite-only · takes 2 minutes a day
-        </p>
       </div>
 
-      {/* Feature cards */}
-      <div className="px-6 pb-16 max-w-sm mx-auto w-full">
-        <div className="space-y-3">
-          {[
-            {
-              bear: "happy" as const,
-              title: "A gentle question, every morning",
-              desc: "One warm prompt a day — no pressure, no judgment. Just a moment for you.",
-              bg: "bg-honey-50 border-honey-400/30",
-            },
-            {
-              bear: "celebrating" as const,
-              title: "Stay connected without calling",
-              desc: "The people who care about you can check in quietly, from wherever they are.",
-              bg: "bg-bear-50 border-bear-200",
-            },
-            {
-              bear: "sleepy" as const,
-              title: "Private and cozy",
-              desc: "Your thoughts are yours. No social feed, no notifications for the world.",
-              bg: "bg-cream-100 border-cream-200",
-            },
-          ].map((f) => (
+      {/* ── Feature list ─────────────────────────────────────────────────── */}
+      <div className="px-6 pb-20 max-w-sm mx-auto w-full">
+        <div className="space-y-px">
+          {FEATURES.map((f, i) => (
             <div
               key={f.title}
-              className={`flex items-center gap-4 p-4 rounded-2xl border ${f.bg}`}
+              className={`flex items-center gap-5 py-6 ${
+                i < FEATURES.length - 1 ? "border-b border-bear-100" : ""
+              }`}
             >
-              <BearMascot mood={f.bear} size={56} animate />
+              <div className="flex-shrink-0">
+                <BearMascot mood={f.bear} size={52} animate />
+              </div>
               <div>
-                <p className="font-extrabold text-bear-600 text-sm">{f.title}</p>
-                <p className="text-bear-400 text-xs mt-0.5 leading-relaxed">{f.desc}</p>
+                <p className="font-display italic font-bold text-bear-600 text-base leading-snug mb-0.5">
+                  {f.title}
+                </p>
+                <p className="text-bear-400 text-sm leading-relaxed">{f.desc}</p>
               </div>
             </div>
           ))}

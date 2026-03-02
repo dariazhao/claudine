@@ -18,6 +18,6 @@ function getGreeting(name: string): { text: string; mood: "happy" | "sleepy" | "
 export default function BearGreeting({ name }: BearGreetingProps) {
   const { text } = getGreeting(name);
   return (
-    <p className="text-xl font-bold text-bear-600">{text}</p>
+    <p className="font-display italic font-bold text-bear-600 text-2xl">{text}</p>
   );
 }

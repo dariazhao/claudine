@@ -30,14 +30,13 @@ export default async function MembersPage() {
   });
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-extrabold text-bear-600">Members 👥</h1>
-          <p className="text-bear-400 text-sm mt-0.5">
-            {members.length} total
-          </p>
-        </div>
+    <div className="page-enter space-y-6">
+      <div>
+        <p className="text-xs font-bold uppercase tracking-[0.15em] text-honey-500 mb-1">Admin</p>
+        <h1 className="font-display italic font-bold text-bear-600 text-3xl leading-tight mb-1">
+          Family
+        </h1>
+        <p className="text-bear-300 text-sm font-semibold">{members.length} member{members.length !== 1 ? "s" : ""}</p>
       </div>
 
       <InviteMemberForm />

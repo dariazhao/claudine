@@ -67,10 +67,11 @@ export default async function DashboardPage() {
   return (
     <div className="page-enter space-y-8">
       <div>
-        <h1 className="text-2xl font-extrabold text-bear-600 mb-1">
-          Dashboard
+        <p className="text-xs font-bold uppercase tracking-[0.15em] text-honey-500 mb-1">Admin</p>
+        <h1 className="font-display italic font-bold text-bear-600 text-3xl leading-tight mb-1">
+          Overview
         </h1>
-        <p className="text-bear-400 text-sm">
+        <p className="text-bear-300 text-sm font-semibold">
           {new Date().toLocaleDateString("en-US", {
             weekday: "long",
             month: "long",

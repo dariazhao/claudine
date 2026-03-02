@@ -35,16 +35,16 @@ export default async function CheckinPage() {
     <div className="page-enter">
       {/* Bear greeting — centered, prominent */}
       <div className="flex flex-col items-center text-center mb-8">
-        <BearMascot mood="happy" size={100} animate className="mb-3" />
+        <BearMascot mood="happy" size={108} animate className="mb-4" />
         <BearGreeting name={session.name} />
-        <p className="text-bear-200 text-sm mt-1">Here's today's question for you 🍯</p>
+        <p className="text-bear-300 text-sm mt-1.5 font-semibold">Here&apos;s today&apos;s question for you 🍯</p>
       </div>
 
       {/* Prompt speech bubble */}
       <DailyPrompt body={prompt.body} category={prompt.category} />
 
       {/* Journal form card */}
-      <div className="bg-white rounded-3xl border border-bear-100 shadow-sm p-6 mt-8">
+      <div className="bg-white rounded-3xl border border-bear-100 shadow-warm p-6 mt-8">
         <JournalForm promptId={prompt.id} />
       </div>
     </div>
