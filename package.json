@@ -10,6 +10,7 @@
     "db:push": "prisma db push",
     "db:seed": "tsx prisma/seed.ts",
     "db:seed-demo": "tsx scripts/seed-demo-data.ts",
+    "bears:export": "tsx scripts/export-bears.ts",
     "postinstall": "prisma generate"
   },
   "dependencies": {
