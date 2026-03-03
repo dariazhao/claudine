@@ -8,17 +8,18 @@ import ProgressPreview from "@/components/charts/ProgressPreview";
 import { TrendPoint } from "@/components/charts/MoodTrendChart";
 import { DistPoint } from "@/components/charts/MoodDistributionChart";
 import { CalData } from "@/components/charts/StreakCalendar";
+import EntryList, { EntryItem } from "@/components/history/EntryList";
 import Link from "next/link";
 
 const LABEL_CONFIG: Record<
   SentimentLabel,
-  { border: string; badge: string; label: string; emotion: Emotion }
+  { emotion: Emotion }
 > = {
-  JOYFUL:     { border: "border-l-honey-500",  badge: "bg-honey-50 text-honey-600 border-honey-300",  label: "Joyful",     emotion: "ecstatic" },
-  POSITIVE:   { border: "border-l-green-400",  badge: "bg-green-50 text-green-700 border-green-200",  label: "Positive",   emotion: "hopeful"  },
-  NEUTRAL:    { border: "border-l-bear-200",   badge: "bg-bear-50 text-bear-400 border-bear-100",     label: "Neutral",    emotion: "calm"     },
-  CONCERNED:  { border: "border-l-peach-400",  badge: "bg-peach-100 text-peach-400 border-peach-200", label: "Concerned",  emotion: "pensive"  },
-  DISTRESSED: { border: "border-l-red-400",    badge: "bg-red-50 text-red-600 border-red-200",        label: "Distressed", emotion: "lonely"   },
+  JOYFUL:     { emotion: "ecstatic" },
+  POSITIVE:   { emotion: "hopeful"  },
+  NEUTRAL:    { emotion: "calm"     },
+  CONCERNED:  { emotion: "pensive"  },
+  DISTRESSED: { emotion: "lonely"   },
 };
 
 function getStreak(dateStrings: string[]): number {
@@ -26,8 +27,14 @@ function getStreak(dateStrings: string[]): number {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const dateSet = new Set(dateStrings);
+  const todayStr = today.toISOString().split("T")[0];
+  // Start from today if already checked in, otherwise try from yesterday
+  const start = new Date(today);
+  if (!dateSet.has(todayStr)) {
+    start.setDate(start.getDate() - 1);
+  }
   let streak = 0;
-  const cursor = new Date(today);
+  const cursor = new Date(start);
   while (dateSet.has(cursor.toISOString().split("T")[0])) {
     streak++;
     cursor.setDate(cursor.getDate() - 1);
@@ -39,16 +46,17 @@ export default async function HistoryPage() {
   const session = await getSession();
   if (!session.userId) redirect("/login");
 
-  // Fetch display entries (most recent 30)
+  // Fetch all entries (newest first)
   const entries = await prisma.entry.findMany({
     where: { userId: session.userId },
     include: { prompt: true },
     orderBy: { createdAt: "desc" },
-    take: 30,
   });
 
-  // ── Chart preview data ────────────────────────────────────────────────────
-  const trendData: TrendPoint[] = [...entries]
+  // ── Chart preview data (use most recent 30) ────────────────────────────────
+  const chartEntries = entries.slice(0, 30);
+
+  const trendData: TrendPoint[] = [...chartEntries]
     .reverse()
     .filter((e) => e.sentimentScore !== null)
     .map((e) => ({
@@ -62,7 +70,7 @@ export default async function HistoryPage() {
   const distCounts: Record<SentimentLabel, number> = {
     JOYFUL: 0, POSITIVE: 0, NEUTRAL: 0, CONCERNED: 0, DISTRESSED: 0,
   };
-  entries.forEach((e) => { if (e.sentimentLabel) distCounts[e.sentimentLabel]++; });
+  chartEntries.forEach((e) => { if (e.sentimentLabel) distCounts[e.sentimentLabel]++; });
 
   const distData: DistPoint[] = [
     { name: "Joyful",     value: distCounts.JOYFUL,     color: "#f59e0b" },
@@ -79,6 +87,15 @@ export default async function HistoryPage() {
   });
 
   const streak = getStreak(Object.keys(calData));
+
+  // Serialize for client components
+  const entryItems: EntryItem[] = entries.map((e) => ({
+    id: e.id,
+    createdAt: e.createdAt.toISOString(),
+    sentimentLabel: e.sentimentLabel,
+    body: e.body,
+    promptBody: e.prompt.body,
+  }));
 
   return (
     <div className="page-enter">
@@ -141,51 +158,7 @@ export default async function HistoryPage() {
           </Link>
         </div>
       ) : (
-        <div className="space-y-3">
-          {entries.map((entry) => {
-            const cfg = entry.sentimentLabel
-              ? LABEL_CONFIG[entry.sentimentLabel]
-              : null;
-
-            return (
-              <div
-                key={entry.id}
-                className={`bg-white rounded-2xl border border-bear-100 border-l-4 ${
-                  cfg ? cfg.border : "border-l-bear-100"
-                } p-5 shadow-warm-sm hover:shadow-warm transition-shadow`}
-              >
-                {/* Date + bear + badge */}
-                <div className="flex items-center justify-between gap-3 mb-3">
-                  <div className="flex items-center gap-2.5">
-                    {cfg && <EmotionBear emotion={cfg.emotion} size={32} />}
-                    <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-bear-300">
-                      {new Date(entry.createdAt).toLocaleDateString("en-US", {
-                        weekday: "long",
-                        month: "long",
-                        day: "numeric",
-                      })}
-                    </p>
-                  </div>
-                  {cfg && (
-                    <span
-                      className={`text-xs font-bold px-2.5 py-0.5 rounded-full border flex-shrink-0 ${cfg.badge}`}
-                    >
-                      {cfg.label}
-                    </span>
-                  )}
-                </div>
-
-                <p className="font-display italic text-bear-400 text-sm mb-2.5 leading-snug">
-                  &#8220;{entry.prompt.body}&#8221;
-                </p>
-
-                <p className="text-bear-600 leading-relaxed text-sm whitespace-pre-wrap">
-                  {entry.body}
-                </p>
-              </div>
-            );
-          })}
-        </div>
+        <EntryList entries={entryItems} />
       )}
     </div>
   );

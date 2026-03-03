@@ -37,8 +37,14 @@ function getStreak(dates: Date[]): number {
       return c.toISOString().split("T")[0];
     })
   );
+  const todayStr = today.toISOString().split("T")[0];
+  // Start from today if checked in today, otherwise from yesterday
+  const start = new Date(today);
+  if (!dateSet.has(todayStr)) {
+    start.setDate(start.getDate() - 1);
+  }
   let streak = 0;
-  const cursor = new Date(today);
+  const cursor = new Date(start);
   while (dateSet.has(cursor.toISOString().split("T")[0])) {
     streak++;
     cursor.setDate(cursor.getDate() - 1);
